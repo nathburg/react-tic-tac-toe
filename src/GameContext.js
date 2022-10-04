@@ -10,6 +10,37 @@ const GameProvider = ({ children }) => {
   const [boardState, setBoardState] = useState(initialBoard);
   const [xPositions, setXPositions] = useState(new Set());
   const [oPositions, setOPositions] = useState(new Set());
+  const checkXWinner = () => {
+    if (
+      (xPositions.has(1) && xPositions.has(2) && xPositions.has(3)) ||
+      (xPositions.has(4) && xPositions.has(5) && xPositions.has(6)) ||
+      (xPositions.has(7) && xPositions.has(8) && xPositions.has(9)) ||
+      (xPositions.has(1) && xPositions.has(4) && xPositions.has(7)) ||
+      (xPositions.has(2) && xPositions.has(5) && xPositions.has(8)) ||
+      (xPositions.has(3) && xPositions.has(6) && xPositions.has(9)) ||
+      (xPositions.has(1) && xPositions.has(5) && xPositions.has(9)) ||
+      (xPositions.has(7) && xPositions.has(5) && xPositions.has(3))
+    ) {
+      setCurrentPlayer('X');
+      setIsPlaying(false);
+    }
+  };
+
+  const checkOWinner = () => {
+    if (
+      (oPositions.has(1) && oPositions.has(2) && oPositions.has(3)) ||
+      (oPositions.has(4) && oPositions.has(5) && oPositions.has(6)) ||
+      (oPositions.has(7) && oPositions.has(8) && oPositions.has(9)) ||
+      (oPositions.has(1) && oPositions.has(4) && oPositions.has(7)) ||
+      (oPositions.has(2) && oPositions.has(5) && oPositions.has(8)) ||
+      (oPositions.has(3) && oPositions.has(6) && oPositions.has(9)) ||
+      (oPositions.has(1) && oPositions.has(5) && oPositions.has(9)) ||
+      (oPositions.has(7) && oPositions.has(5) && oPositions.has(3))
+    ) {
+      setCurrentPlayer('O');
+      setIsPlaying(false);
+    }
+  };
 
   return <GameContext.Provider value={{
     isPlaying,
@@ -21,7 +52,9 @@ const GameProvider = ({ children }) => {
     xPositions,
     setXPositions,
     oPositions,
-    setOPositions
+    setOPositions,
+    checkXWinner,
+    checkOWinner
   }}>
     {children}
   </GameContext.Provider>;
