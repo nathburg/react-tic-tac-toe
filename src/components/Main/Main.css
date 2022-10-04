@@ -1,0 +1,12 @@
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 350px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
