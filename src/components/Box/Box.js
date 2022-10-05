@@ -6,7 +6,6 @@ export default function Box({ position, content }) {
   const { 
     currentPlayer,
     setCurrentPlayer,
-    boardState,
     setBoardState,
     xPositions,
     setXPositions,
@@ -17,7 +16,6 @@ export default function Box({ position, content }) {
   } = useContext(GameContext);
   
   const clickHandler = () => {
-    console.log('click happening');
     if (content === '') {
       const newPosition = { 'position': position, 'content': currentPlayer };
       setBoardState((prevBoard) => {
