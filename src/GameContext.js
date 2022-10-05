@@ -6,10 +6,34 @@ const GameContext = createContext();
 
 const GameProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isScratchGame, setIsScratchGame] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState('X');
   const [boardState, setBoardState] = useState(initialBoard);
   const [xPositions, setXPositions] = useState(new Set());
   const [oPositions, setOPositions] = useState(new Set());
+  
+  const newGame = () => {
+    setIsPlaying(true);
+    setIsScratchGame(false);
+    setCurrentPlayer('X');
+    setBoardState(initialBoard);
+    setXPositions(new Set());
+    setOPositions(new Set());
+  };
+  
+  const isPositionUsed = (gamePosition) => {
+    if (gamePosition.content) {
+      return true;
+    }
+  };  
+  
+  const checkScratchGame = () => {
+    if (boardState.every(isPositionUsed)) {
+      setIsScratchGame(true);
+      setIsPlaying(false);
+    }
+  };
+  
   const checkXWinner = () => {
     if (
       (xPositions.has(1) && xPositions.has(2) && xPositions.has(3)) ||
@@ -23,9 +47,11 @@ const GameProvider = ({ children }) => {
     ) {
       setCurrentPlayer('X');
       setIsPlaying(false);
+    } else {
+      checkScratchGame();
     }
   };
-
+  
   const checkOWinner = () => {
     if (
       (oPositions.has(1) && oPositions.has(2) && oPositions.has(3)) ||
@@ -54,7 +80,9 @@ const GameProvider = ({ children }) => {
     oPositions,
     setOPositions,
     checkXWinner,
-    checkOWinner
+    checkOWinner,
+    isScratchGame,
+    newGame
   }}>
     {children}
   </GameContext.Provider>;

@@ -17,10 +17,14 @@ export default function Box({ position, content }) {
   } = useContext(GameContext);
   
   const clickHandler = () => {
+    console.log('click happening');
     if (content === '') {
       const newPosition = { 'position': position, 'content': currentPlayer };
-      boardState.splice(position - 1, 1, newPosition);
-      setBoardState(boardState);
+      setBoardState((prevBoard) => {
+        return prevBoard.map((boardPosition) => {
+          return boardPosition.position === position ? newPosition : { ...boardPosition };
+        });
+      });
 
       if (currentPlayer === 'X') {
         setCurrentPlayer('O');
