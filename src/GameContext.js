@@ -20,62 +20,77 @@ const GameProvider = ({ children }) => {
     setXPositions(new Set());
     setOPositions(new Set());
   };
-  
+    
   const isPositionUsed = (gamePosition) => {
     if (gamePosition.content) {
       return true;
     }
   };  
   
-  const checkScratchGame = () => {
-    console.log('hello scratch');
-    console.log(boardState);
-    console.log('board state test: ', (boardState.every(isPositionUsed)));
-    if (boardState.every(isPositionUsed)) {
-      console.log('1 scratch finish: ', isScratchGame);
+  const checkScratchGame = (newBoard) => {
+    if (newBoard.every(isPositionUsed)) {
       setIsScratchGame(true);
       setIsPlaying(false);
-      console.log('2 scratch finish: ', isScratchGame);
     }
-    console.log('scratch: ', isScratchGame);
   };
   
-  const checkXWinner = () => {
-    console.log('xcheck: ', boardState);
-    console.log((xPositions.has(3) && xPositions.has(6) && xPositions.has(9)));
+  const checkXWinner = (newXSet, newBoard) => {
     if (
-      (xPositions.has(1) && xPositions.has(2) && xPositions.has(3)) ||
-      (xPositions.has(4) && xPositions.has(5) && xPositions.has(6)) ||
-      (xPositions.has(7) && xPositions.has(8) && xPositions.has(9)) ||
-      (xPositions.has(1) && xPositions.has(4) && xPositions.has(7)) ||
-      (xPositions.has(2) && xPositions.has(5) && xPositions.has(8)) ||
-      (xPositions.has(3) && xPositions.has(6) && xPositions.has(9)) ||
-      (xPositions.has(1) && xPositions.has(5) && xPositions.has(9)) ||
-      (xPositions.has(7) && xPositions.has(5) && xPositions.has(3))
+      (newXSet.has(1) && newXSet.has(2) && newXSet.has(3)) ||
+      (newXSet.has(4) && newXSet.has(5) && newXSet.has(6)) ||
+      (newXSet.has(7) && newXSet.has(8) && newXSet.has(9)) ||
+      (newXSet.has(1) && newXSet.has(4) && newXSet.has(7)) ||
+      (newXSet.has(2) && newXSet.has(5) && newXSet.has(8)) ||
+      (newXSet.has(3) && newXSet.has(6) && newXSet.has(9)) ||
+      (newXSet.has(1) && newXSet.has(5) && newXSet.has(9)) ||
+      (newXSet.has(7) && newXSet.has(5) && newXSet.has(3))
     ) {
       setCurrentPlayer('X');
       setIsPlaying(false);
     } else {
-      checkScratchGame();
+      checkScratchGame(newBoard);
     }
   };
   
-  const checkOWinner = () => {
-    console.log('ocheck: ', boardState);
+  const checkOWinner = (newOSet, newBoard) => {
     if (
-      (oPositions.has(1) && oPositions.has(2) && oPositions.has(3)) ||
-      (oPositions.has(4) && oPositions.has(5) && oPositions.has(6)) ||
-      (oPositions.has(7) && oPositions.has(8) && oPositions.has(9)) ||
-      (oPositions.has(1) && oPositions.has(4) && oPositions.has(7)) ||
-      (oPositions.has(2) && oPositions.has(5) && oPositions.has(8)) ||
-      (oPositions.has(3) && oPositions.has(6) && oPositions.has(9)) ||
-      (oPositions.has(1) && oPositions.has(5) && oPositions.has(9)) ||
-      (oPositions.has(7) && oPositions.has(5) && oPositions.has(3))
+      (newOSet.has(1) && newOSet.has(2) && newOSet.has(3)) ||
+      (newOSet.has(4) && newOSet.has(5) && newOSet.has(6)) ||
+      (newOSet.has(7) && newOSet.has(8) && newOSet.has(9)) ||
+      (newOSet.has(1) && newOSet.has(4) && newOSet.has(7)) ||
+      (newOSet.has(2) && newOSet.has(5) && newOSet.has(8)) ||
+      (newOSet.has(3) && newOSet.has(6) && newOSet.has(9)) ||
+      (newOSet.has(1) && newOSet.has(5) && newOSet.has(9)) ||
+      (newOSet.has(7) && newOSet.has(5) && newOSet.has(3))
     ) {
       setCurrentPlayer('O');
       setIsPlaying(false);
     } else {
-      checkScratchGame();
+      checkScratchGame(newBoard);
+    }
+  };
+
+  const makeMove = (position, content) => {
+    const newPosition = { 'position': position, 'content': currentPlayer };
+    const makeNewBoard = (prevBoard) => {
+      return prevBoard.map((boardPosition) => {
+        return boardPosition.position === position ? newPosition : { ...boardPosition };
+      });};
+    const newBoard = makeNewBoard(boardState);
+    const newXSet = new Set([...xPositions, position]);
+    const newOSet = new Set([...oPositions, position]);      
+    
+    if (content === '') {
+      if (currentPlayer === 'X') {
+        setCurrentPlayer('O');
+        checkXWinner(newXSet, newBoard);
+        setXPositions(newXSet);
+      } else {
+        setCurrentPlayer('X');
+        checkOWinner(newOSet, newBoard);
+        setOPositions(newOSet);
+      }
+      setBoardState(newBoard);
     }
   };
 
@@ -94,7 +109,8 @@ const GameProvider = ({ children }) => {
     checkOWinner,
     isScratchGame,
     newGame,
-    isPositionUsed
+    isPositionUsed,
+    makeMove
   }}>
     {children}
   </GameContext.Provider>;

@@ -4,8 +4,7 @@ import Box from '../Box/Box';
 import './Main.css';
 
 export default function Main() {
-  const { isPlaying, currentPlayer, boardState, isScratchGame, newGame, isPositionUsed } = useContext(GameContext);
-  console.log(boardState.every(isPositionUsed));
+  const { isPlaying, currentPlayer, boardState, isScratchGame, newGame } = useContext(GameContext);
   return (
     <div className='main'>
       {isPlaying &&
