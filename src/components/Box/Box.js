@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 import { GameContext } from '../../GameContext';
 import './Box.css';
 
@@ -12,31 +13,44 @@ export default function Box({ position, content }) {
     oPositions,
     setOPositions,
     checkXWinner,
-    checkOWinner
+    checkOWinner, boardState
   } = useContext(GameContext);
   
+  const endTurn = () => {
+    console.log('PLZ ', boardState);
+    if (currentPlayer === 'X') {
+      const newSet = new Set([...xPositions, position]);
+      setXPositions(newSet);
+      setCurrentPlayer('O');
+      checkXWinner();
+    } else {
+      const newSet = new Set([...oPositions, position]);
+      setOPositions(newSet);
+      setCurrentPlayer('X');
+      checkOWinner();
+    }
+  };
+  
+  useEffect(() => {
+    endTurn()
+    ;},
+  [boardState]
+  );
   const clickHandler = () => {
     if (content === '') {
       const newPosition = { 'position': position, 'content': currentPlayer };
+      // const prevBoard = boardState;
       setBoardState((prevBoard) => {
         return prevBoard.map((boardPosition) => {
           return boardPosition.position === position ? newPosition : { ...boardPosition };
-        });
-      });
-
-      if (currentPlayer === 'X') {
-        setCurrentPlayer('O');
-        xPositions.add(position);
-        setXPositions(xPositions);
-        checkXWinner();
-      } else {
-        setCurrentPlayer('X');
-        oPositions.add(position);
-        setOPositions(oPositions);
-        checkOWinner();
-      }
+        });});
+      
+      
+      // setBoardState(newBoard, endTurn());
+      console.log(boardState);
     }
   };
+      
 
   return (
     <div className="box" onClick={() => clickHandler()}>
@@ -45,4 +59,4 @@ export default function Box({ position, content }) {
       </div>
     </div>
   );
-}
+}  

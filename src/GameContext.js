@@ -28,13 +28,21 @@ const GameProvider = ({ children }) => {
   };  
   
   const checkScratchGame = () => {
+    console.log('hello scratch');
+    console.log(boardState);
+    console.log('board state test: ', (boardState.every(isPositionUsed)));
     if (boardState.every(isPositionUsed)) {
+      console.log('1 scratch finish: ', isScratchGame);
       setIsScratchGame(true);
       setIsPlaying(false);
+      console.log('2 scratch finish: ', isScratchGame);
     }
+    console.log('scratch: ', isScratchGame);
   };
   
   const checkXWinner = () => {
+    console.log('xcheck: ', boardState);
+    console.log((xPositions.has(3) && xPositions.has(6) && xPositions.has(9)));
     if (
       (xPositions.has(1) && xPositions.has(2) && xPositions.has(3)) ||
       (xPositions.has(4) && xPositions.has(5) && xPositions.has(6)) ||
@@ -53,6 +61,7 @@ const GameProvider = ({ children }) => {
   };
   
   const checkOWinner = () => {
+    console.log('ocheck: ', boardState);
     if (
       (oPositions.has(1) && oPositions.has(2) && oPositions.has(3)) ||
       (oPositions.has(4) && oPositions.has(5) && oPositions.has(6)) ||
@@ -65,6 +74,8 @@ const GameProvider = ({ children }) => {
     ) {
       setCurrentPlayer('O');
       setIsPlaying(false);
+    } else {
+      checkScratchGame();
     }
   };
 
@@ -82,7 +93,8 @@ const GameProvider = ({ children }) => {
     checkXWinner,
     checkOWinner,
     isScratchGame,
-    newGame
+    newGame,
+    isPositionUsed
   }}>
     {children}
   </GameContext.Provider>;
